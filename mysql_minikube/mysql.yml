@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql-oms
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql-oms
+    spec:
+      containers:
+      - image: mysql:8.0
+        name: mysql-oms
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        ports:
+        - containerPort: 3306
+          name: mysql-oms
+        volumeMounts:
+        - name: mysql-persistent-volume
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-volume
+        persistentVolumeClaim:
+          claimName: mysql-pvc
